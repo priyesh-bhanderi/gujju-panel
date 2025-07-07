@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import { apiFunctions } from '../../Apis/apiFunctions';
 import { allApis } from '../../Apis/Apis';
 import { UserState } from '../../Context/Usercontext';
-import Dashboard from '../Pages/DashBoard';
+import Dashboard from '../pages/Dashboard';
 
 const Admin = () => {
 
