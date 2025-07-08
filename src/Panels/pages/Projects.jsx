@@ -58,11 +58,7 @@ const Projects = () => {
 
     const handleSubmit = async () => {
 
-        const validationErrors = validateProjectForm(newData);
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
-            return;
-        }
+        if (!validateLoginForm(newData, setErrors)) return;
 
         const formData = new FormData();
         Object.keys(newData).forEach(key => {

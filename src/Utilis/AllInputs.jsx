@@ -13,7 +13,7 @@ const AllInputs = () => {
         ]
     }
 
-    const validateProjectForm = (data) => {
+    const validateProjectForm = (data,setErrors) => {
 
         const newErrors = {};
 
@@ -28,7 +28,12 @@ const AllInputs = () => {
         if (!data.image) newErrors.image = "Image is required";
         if (!data.description) newErrors.description = "Description is required";
 
-        return newErrors;
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+        setErrors({}); // Clear previous errors
+    return true;
     };
 
     return { projectsInputs, validateProjectForm }

@@ -12,33 +12,11 @@ import Projects from '../pages/Projects';
 
 const Admin = ({ role }) => {
 
-    const { apiGet } = apiFunctions();
-    const { dashboard } = allApis();
-    const { user, socRefresh } = UserState();
-
-    const [data, setData] = useState({});
-    const [users, setUsers] = useState([]);
-    const [members, setMembers] = useState([]);
     const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleMenu = () => {
         setIsExpanded(!isExpanded);
     };
-
-    const getData = async () => {
-        const res = await apiGet(dashboard.get);
-        if (res.success) {
-            setData(res.data.result)
-            setUsers(res.data.user)
-            setMembers(res.data.member)
-        }
-    }
-
-    useEffect(() => {
-        if (user) {
-            // getData();
-        }
-    }, [user, socRefresh])
 
     const links = [
         {
