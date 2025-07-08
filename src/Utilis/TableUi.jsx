@@ -24,7 +24,7 @@ const TableUi = ({ notData, columns, rows, pagination, editClick, deleteClick, p
     const filteredData = rows?.filter((row) =>
         columns.some((column) => {
             const value = row[column.field];
-            return value?.toString().toLowerCase().includes(searchQuery);
+            return value?.toString().toLowerCase().includes(searchQuery.trim());
         })
     );
 
@@ -172,7 +172,7 @@ const TableUi = ({ notData, columns, rows, pagination, editClick, deleteClick, p
             )}
             <CommanModel open={passOpen} onClose={() => setPassOpen(null)} submit={handlePass} title='Password Update'>
                 <div className="grid grid-cols-1 gap-5 py-3">
-                    {AllFields.map((list, i) => (
+                    {getFormFields(key, passWords, setPasswords).map((list, i) => (
                         <React.Fragment key={i}>
                             <LableInput {...list} />
                         </React.Fragment>
