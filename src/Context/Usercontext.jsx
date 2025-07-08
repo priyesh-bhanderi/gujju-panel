@@ -10,7 +10,7 @@ export const UserProvider = ({ children }) => {
   const [socId ,setSocId]=useState(null);
   const [socRefresh ,setSocRefresh]=useState(0);
   const [custData, setCustdata] = useState(null)
-
+const [errors, setErrors] = useState({});
 
 
   useEffect(() => {
@@ -44,6 +44,7 @@ export const UserProvider = ({ children }) => {
         setLoading,
         setRefresh,
         logout,
+        errors, setErrors,
         custData, setCustdata,socTypes,
       }}
     >

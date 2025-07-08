@@ -15,16 +15,16 @@ const Projects = () => {
 
     const { project } = allApis();
     const { apiGet, apiPost, apiPostFile, apiDelete } = apiFunctions();
-    const { user } = UserState();
+    const { user ,setErrors} = UserState();
     const { projectsColumns } = Columns();
     const navigate = useNavigate();
     const { showToast } = useToast();
-    const { projectsInputs, validateProjectForm } = AllInputs();
+    const { getFormFields, validateForm } = AllInputs();
+    const key = 'project'
 
     const [data, setData] = useState([]);
     const [open, setOpen] = useState(false);
     const [id, setId] = useState(null)
-    const [errors, setErrors] = useState({});
     const [newData, setNewData] = useState({});
 
     const getData = async ({ status, msg }) => {
@@ -58,7 +58,7 @@ const Projects = () => {
 
     const handleSubmit = async () => {
 
-        if (!validateLoginForm(newData, setErrors)) return;
+        if (!validateForm(key, newData)) return;
 
         const formData = new FormData();
         Object.keys(newData).forEach(key => {
@@ -101,7 +101,7 @@ const Projects = () => {
                 <TableUi columns={projectsColumns()} rows={data} statusClick={(row) => handleStatus(row.id, row.status == 1 ? 0 : 1)} editClick={(row) => handleEdit(row)} deleteClick={(row) => handleDelete(row.id)} viewClick={(row) => window.open(row.link, '_blank')} />
                 <CommanModel title={`${id ? 'Update' : 'Add'} Project`} open={open} onClose={() => { setOpen(false), setErrors({}), setNewData({}) }} submit={handleSubmit}>
                     <div className="grid grid-cols-2 gap-5 py-2">
-                        {projectsInputs(errors, newData, setNewData, ctgOptions).map((list, i) => (
+                        {getFormFields(key, newData, setNewData, ctgOptions).map((list, i) => (
                             <div key={i} className={`${(i == 4 || i == 5) ? 'col-span-2' : ''}`}>
                                 <LableInput {...list} />
                             </div>
