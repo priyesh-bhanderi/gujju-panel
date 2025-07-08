@@ -1,4 +1,4 @@
-import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Button, Pagination, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { RiDeleteBin6Line } from 'react-icons/ri';
@@ -7,8 +7,11 @@ import { TiArrowSync } from 'react-icons/ti';
 import { MdLockOutline } from 'react-icons/md';
 import CommanModel from './CommanModel';
 import LableInput from './LableInput';
+import { IoEyeSharp } from 'react-icons/io5';
 
-const TableUi = ({ notData, columns, rows, pagination, editClick, deleteClick, passClick, viewClick }) => {
+const TableUi = ({ notData, columns, rows, pagination, editClick, deleteClick, passClick, viewClick, statusClick }) => {
+
+    const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
     const [searchQuery, setSearchQuery] = useState('');
     const [deleteData, setDeleteData] = useState(null);
@@ -87,7 +90,7 @@ const TableUi = ({ notData, columns, rows, pagination, editClick, deleteClick, p
                                     {column.name}
                                 </TableCell>
                             ))}
-                            {(editClick || deleteClick || passClick) && (
+                            {(editClick || deleteClick || passClick || viewClick) && (
                                 <TableCell style={{ fontWeight: 700 }}>Actions</TableCell>
                             )}
                         </TableRow>
@@ -96,13 +99,27 @@ const TableUi = ({ notData, columns, rows, pagination, editClick, deleteClick, p
                         {(paginatedData?.length > 0 ? paginatedData : []).map((row, i) => (
                             <TableRow hover key={i}>
                                 {columns.map((col, j) => (
-                                    <TableCell key={j} onClick={() => viewClick(row)} className={`line-clamp-1 cursor-pointer ${viewClick ?'cursor-pointer':''}`}>
-                                        {col.renderCell ? col.renderCell(row) : row[col.field]}
+                                    <TableCell key={j} className={`line-clamp-1`}>
+                                        {col.field == 'status' ?
+                                            <div className="flex flex-row place-items-center gap-3 w-full">
+                                                <span className={`${row.status == 1 ? 'bg-green-300/50 text-green-600' : 'bg-red-300/50 text-red-600'} font-medium h-fit px-2 py-0.5 rounded-full`}>{row.status == 1 ? 'active' : 'inactive'}</span>
+                                                <Switch {...label} checked={row.status == 1} onChange={() => statusClick(row)} />
+                                            </div>
+                                            : col.renderCell ? col.renderCell(row) : row[col.field]
+                                        }
                                     </TableCell>
                                 ))}
-                                {(editClick || deleteClick || passClick) && (
+                                {(editClick || deleteClick || passClick || viewClick) && (
                                     <TableCell>
                                         <div className="flex flex-row gap-4 place-items-center">
+                                            {viewClick && (
+                                                <Button
+                                                    onClick={() => viewClick(row)}
+                                                    sx={{ width: 30, minWidth: 0, color: "green", height: 30, padding: 0, fontSize: 25 }}
+                                                >
+                                                    <IoEyeSharp />
+                                                </Button>
+                                            )}
                                             {passClick && (
                                                 <Button
                                                     onClick={() => setPassOpen(row.id)}
@@ -153,17 +170,13 @@ const TableUi = ({ notData, columns, rows, pagination, editClick, deleteClick, p
                     />
                 </div>
             )}
-            <CommanModel open={passOpen} onClose={() => setPassOpen(null)} title='Password Update'>
+            <CommanModel open={passOpen} onClose={() => setPassOpen(null)} submit={handlePass} title='Password Update'>
                 <div className="grid grid-cols-1 gap-5 py-3">
                     {AllFields.map((list, i) => (
                         <React.Fragment key={i}>
                             <LableInput {...list} />
                         </React.Fragment>
                     ))}
-                </div>
-                <div className="flex flex-row justify-center place-items-center gap-5 mt-5">
-                    <Button variant="contained" color="error" onClick={() => setPassOpen(null)}>Cancel</Button>
-                    <Button variant="contained" onClick={handlePass}>Done</Button>
                 </div>
             </CommanModel>
             <DeleteAlertModel

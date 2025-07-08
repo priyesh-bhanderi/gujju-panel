@@ -8,6 +8,7 @@ import Dashboard from '../pages/Dashboard';
 import Sidebar from '../../Components/Sidebar';
 import { LuLayoutDashboard } from 'react-icons/lu';
 import { GoProjectSymlink } from 'react-icons/go';
+import Projects from '../pages/Projects';
 
 const Admin = ({ role }) => {
 
@@ -54,7 +55,7 @@ const Admin = ({ role }) => {
     return (
         <>
             <Navbar toggleMenu={toggleMenu} />
-            <div className="flex h-[92vh] overflow-hidden scroll">
+            <div className="flex h-[92vh] overflow-hidden scroll bg-gray-300/40">
                 <div
                     className={`fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden transition-all duration-300 ease-out ${isExpanded ? "translate-x-0" : "-translate-x-full"
                         }`}
@@ -70,9 +71,10 @@ const Admin = ({ role }) => {
                         links={links}
                     />
                 </div>
-                <div className="md:p-6 p-2 h-[92vh] overflow-y-auto">
+                <div className="md:p-6 p-2 h-[92vh] overflow-y-auto w-full">
                     <Routes>
                         <Route path="/" element={<Dashboard />} />
+                        <Route path="/projects" element={<Projects />} />
                     </Routes>
                 </div>
             </div>
