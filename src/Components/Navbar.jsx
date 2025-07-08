@@ -76,6 +76,9 @@ const Navbar = ({ toggleMenu }) => {
         <>
             <div className="bg-white shadow-md sticky top-0 z-40 flex items-center justify-between px-4 gap-5 md:px-6 lg:px-10 h-[8vh]">
                 <div className="flex  place-items-center md:gap-5 gap-3">
+                    <button onClick={toggleMenu} className="text-2xl ">
+                        <FiMenu />
+                    </button>
                     <Link to={`/${user?.role}`} className='text-2xl font-semibold mb-1 capitalize'>Gujju Panel</Link>
                 </div>
                 <div className="flex items-center gap-10">
