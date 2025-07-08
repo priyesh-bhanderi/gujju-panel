@@ -14,7 +14,7 @@ const AllInputs = () => {
     }
 
     const validateProjectForm = (data) => {
-        console.log(data)
+
         const newErrors = {};
 
         if (!data.title) newErrors.title = "Project name is required";
