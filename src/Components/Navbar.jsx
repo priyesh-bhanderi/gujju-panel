@@ -8,6 +8,7 @@ import { Button, Menu, MenuItem } from '@mui/material';
 import CommanModel from '../Utilis/CommanModel';
 import LableInput from '../Utilis/LableInput';
 import { useToast } from '../Context/ToastProvider';
+import AllInputs from '../Utilis/AllInputs';
 
 const Navbar = ({ toggleMenu }) => {
 
@@ -16,10 +17,10 @@ const Navbar = ({ toggleMenu }) => {
     const { profile } = allApis();
     const navigate = useNavigate();
     const { showToast } = useToast();
+    const { getFormFields, validateForm } = AllInputs('change-password');
 
     const [open, setOpen] = useState(false);
     const [passOpen, setPassOpen] = useState(false)
-    const [errors, setErrors] = useState({})
     const [passWords, setPasswords] = useState({})
 
     const handleLogout = async () => {
@@ -30,47 +31,20 @@ const Navbar = ({ toggleMenu }) => {
         }
     }
 
-    const AllFields = [
-        { error: errors.current_password, type: 'password', placeholder: 'Enter Current Password', errorText: errors.current_password, label: "Current Password", value: passWords?.current_password || '', onChange: (e) => setPasswords({ ...passWords, current_password: e.target.value }) },
-        { error: errors.new_password, type: 'password', placeholder: 'Enter New Password', errorText: errors.new_password, label: "New Password", value: passWords?.new_password || '', onChange: (e) => setPasswords({ ...passWords, new_password: e.target.value }) },
-    ]
-
     const handlePass = async () => {
-        const newErrors = {};
+        if (!validateForm(passWords)) return;
+        const formData = new FormData();
+        Object.keys(passWords).forEach(key => {
+            formData.append(key, passWords[key]);
+        });
 
-        const sixDigitRegex = /^\d{6}$/;
-
-        if (!passWords.current_password) {
-            newErrors.current_password = 'Current password is required';
-        } else if (!sixDigitRegex.test(passWords.current_password)) {
-            newErrors.current_password = 'Current password must be exactly 6 digits';
-        }
-
-        if (!passWords.new_password) {
-            newErrors.new_password = 'New password is required';
-        } else if (!sixDigitRegex.test(passWords.new_password)) {
-            newErrors.new_password = 'New password must be exactly 6 digits';
-        }
-
-        setErrors(newErrors);
-        if (Object.keys(newErrors).length === 0) {
-
-            const formData = new FormData();
-            Object.keys(passWords).forEach(key => {
-                formData.append(key, passWords[key]);
-            });
-
-            const res = await apiPostFile(profile.changePassword, formData, true);
-            if (res.success) {
-                setPassOpen(false)
-                showToast(`Password Update Successfully`)
-            }
+        const res = await apiPostFile(profile.changePassword, formData, true);
+        if (res.success) {
+            setPassOpen(false)
+            showToast(`Password Update Successfully`)
         }
     }
 
-    // const { usermemberColumns } = Columns();
-
-    // console.log(usermemberColumns({ active: 'member' }))
 
     return (
         <>
@@ -128,17 +102,13 @@ const Navbar = ({ toggleMenu }) => {
                     }
                 </div>
             </div>
-            <CommanModel open={passOpen} onClose={() => setPassOpen(false)} title='Password Update'>
+            <CommanModel open={passOpen} onClose={() => setPassOpen(false)} title='Password Update' submit={handlePass}>
                 <div className="grid grid-cols-1 gap-5 py-3">
-                    {AllFields.map((list, i) => (
+                    {getFormFields(passWords, setPasswords).map((list, i) => (
                         <React.Fragment key={i}>
                             <LableInput {...list} />
                         </React.Fragment>
                     ))}
-                </div>
-                <div className="flex flex-row justify-center place-items-center gap-5 mt-5">
-                    <Button variant="contained" color="error" onClick={() => setPassOpen(false)}>Cancel</Button>
-                    <Button variant="contained" onClick={handlePass}>Done</Button>
                 </div>
             </CommanModel>
         </>

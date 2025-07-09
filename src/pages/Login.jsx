@@ -6,38 +6,22 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useToast } from '../Context/ToastProvider';
 import { allApis } from '../Apis/Apis';
 import LableInput from '../Utilis/LableInput';
+import AllInputs from '../Utilis/AllInputs';
 
 const Login = () => {
 
     const { loading, setRefresh } = UserState();
-    const { apiPost ,apiGet} = apiFunctions();
+    const { apiPost, apiGet } = apiFunctions();
     const { auth } = allApis();
     const navigate = useNavigate();
     const { showToast } = useToast();
+    const { getFormFields, validateForm } = AllInputs('login');
 
-    const [userData, setUserData] = useState({})
-    const [errors, setErrors] = useState({});
-
-    const validateForm = () => {
-        const newErrors = {};
-
-        if (!userData.email) {
-            newErrors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(userData.email)) {
-            newErrors.email = 'Enter a valid email';
-        }
-
-        if (!userData.password) {
-            newErrors.password = 'Password is required';
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    const [userData, setUserData] = useState({});
 
     const handleLogin = async () => {
 
-        if (!validateForm()) return;
+        if (!validateForm(userData)) return;
 
         const response = await apiPost(auth?.login, userData, true);
         if (response.status) {
@@ -51,17 +35,14 @@ const Login = () => {
         }
     }
 
-    const AllFields = [
-        { error: errors.email, type: 'email', placeholder: 'Enter Email ID', errorText: errors.email, label: "Email ID", value: userData?.email || '', onChange: (e) => setUserData({ ...userData, email: e.target.value }) },
-        { error: errors.password, type: 'password', placeholder: 'Enter Password', errorText: errors.password, label: "Password", value: userData?.password || '', onChange: (e) => setUserData({ ...userData, password: e.target.value }) },
-    ]?.filter(Boolean)
+    // const AllFields = 
 
     return (
         <div className='bg-[#ccc] h-dvh flex justify-center place-items-center px-5 md:px-0'>
             <div className="bg-white rounded-lg p-5 flex flex-col gap-5 xl:w-1/4 md:w-1/2 w-full">
                 <h6 className='text-xl font-medium'>Login</h6>
                 <div className="grid grid-cols-1 gap-5">
-                    {AllFields?.map((list, i) => (
+                    {getFormFields(userData, setUserData)?.map((list, i) => (
                         <React.Fragment key={i}>
                             <LableInput {...list} />
                         </React.Fragment>

@@ -5,8 +5,6 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import DeleteAlertModel from './DeleteAlertModel';
 import { TiArrowSync } from 'react-icons/ti';
 import { MdLockOutline } from 'react-icons/md';
-import CommanModel from './CommanModel';
-import LableInput from './LableInput';
 import { IoEyeSharp } from 'react-icons/io5';
 
 const TableUi = ({ notData, columns, rows, pagination, editClick, deleteClick, passClick, viewClick, statusClick }) => {
@@ -15,9 +13,6 @@ const TableUi = ({ notData, columns, rows, pagination, editClick, deleteClick, p
 
     const [searchQuery, setSearchQuery] = useState('');
     const [deleteData, setDeleteData] = useState(null);
-    const [passOpen, setPassOpen] = useState(null);
-    const [passWords, setPasswords] = useState({});
-    const [errors, setErrors] = useState({})
     const [page, setPage] = useState(1);
     const rowsPerPage = 10;
 
@@ -37,39 +32,9 @@ const TableUi = ({ notData, columns, rows, pagination, editClick, deleteClick, p
     };
 
     useEffect(() => {
-        setPassOpen(null)
         setDeleteData(null);
         setPage(1);
     }, [rows, searchQuery]);
-
-    const AllFields = [
-        { error: errors.password, type: 'password', placeholder: 'Enter Password', errorText: errors.password, label: "Password", value: passWords?.password || '', onChange: (e) => setPasswords({ ...passWords, password: e.target.value }) },
-        { error: errors.cpassword, type: 'password', placeholder: 'Enter Confirm Password', errorText: errors.cpassword, label: "Confirm Password", value: passWords?.cpassword || '', onChange: (e) => setPasswords({ ...passWords, cpassword: e.target.value }) },
-    ]
-
-    const handlePass = () => {
-        const newErrors = {};
-        const sixDigitRegex = /^\d{6}$/;
-        if (!passWords.password) {
-            newErrors.password = "Password is required";
-        } else if (!sixDigitRegex.test(passWords.password)) {
-            newErrors.password = "Password must be a 6-digit number";
-        }
-
-        if (!passWords.cpassword) {
-            newErrors.cpassword = "Confirm Password is required";
-        } else if (passWords.cpassword !== passWords.password) {
-            newErrors.cpassword = "Passwords do not match";
-        } else if (!sixDigitRegex.test(passWords.cpassword)) {
-            newErrors.cpassword = "Confirm Password must be a 6-digit number";
-        }
-
-        setErrors(newErrors);
-        if (Object.keys(newErrors).length === 0) {
-            passClick(passOpen, passWords)
-            setErrors({})
-        }
-    }
 
     return (
         <div className='flex flex-col gap-5 capitalize text-nowrap'>
@@ -170,15 +135,6 @@ const TableUi = ({ notData, columns, rows, pagination, editClick, deleteClick, p
                     />
                 </div>
             )}
-            <CommanModel open={passOpen} onClose={() => setPassOpen(null)} submit={handlePass} title='Password Update'>
-                <div className="grid grid-cols-1 gap-5 py-3">
-                    {getFormFields(key, passWords, setPasswords).map((list, i) => (
-                        <React.Fragment key={i}>
-                            <LableInput {...list} />
-                        </React.Fragment>
-                    ))}
-                </div>
-            </CommanModel>
             <DeleteAlertModel
                 open={deleteData}
                 onClose={() => setDeleteData(null)}
