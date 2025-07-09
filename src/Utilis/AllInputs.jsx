@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react'
 const AllInputs = (name) => {
 
     const [errors, setErrors] = useState({});
+    const [data, setData] = useState({});
 
-    const getFormFields = (data, setData, options) => {
+    const getFormFields = (options) => {
         switch (name) {
             case 'login':
                 return [
@@ -14,7 +15,7 @@ const AllInputs = (name) => {
 
             case 'project':
                 return [
-                    { error: errors.title, type: 'text', placeholder: 'Enter Society Name', errorText: errors.title, label: 'Project Name', value: data?.title || '', onChange: (e) => setData({ ...data, title: e.target.value }) },
+                    { error: errors.title, type: 'text', placeholder: 'Enter Project Name', errorText: errors.title, label: 'Project Name', value: data?.title || '', onChange: (e) => setData({ ...data, title: e.target.value }) },
                     { error: errors.category, type: 'select', errorText: errors.category, label: "Category", value: data?.category, options: options, onChange: (e) => setData({ ...data, category: e.target.value }) },
                     { error: errors.tools, type: 'text', placeholder: 'Enter Tools', errorText: errors.tools, label: 'Tools', value: data?.tools || '', onChange: (e) => setData({ ...data, tools: e.target.value }) },
                     { error: errors.link, type: 'text', placeholder: 'Enter URL', errorText: errors.link, label: 'Live URL', value: data?.link || '', onChange: (e) => setData({ ...data, link: e.target.value }) },
@@ -32,7 +33,7 @@ const AllInputs = (name) => {
         }
     };
 
-    const validateForm = (data) => {
+    const validateForm = () => {
         const newErrors = {};
 
         switch (name) {
@@ -86,7 +87,7 @@ const AllInputs = (name) => {
         return true;
     };
 
-    return { getFormFields, validateForm }
+    return { getFormFields, validateForm, data ,setData ,setErrors}
 
 }
 

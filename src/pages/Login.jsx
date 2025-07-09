@@ -15,15 +15,13 @@ const Login = () => {
     const { auth } = allApis();
     const navigate = useNavigate();
     const { showToast } = useToast();
-    const { getFormFields, validateForm } = AllInputs('login');
-
-    const [userData, setUserData] = useState({});
+    const { getFormFields, validateForm ,data} = AllInputs('login');
 
     const handleLogin = async () => {
 
-        if (!validateForm(userData)) return;
+        if (!validateForm()) return;
 
-        const response = await apiPost(auth?.login, userData, true);
+        const response = await apiPost(auth?.login, data, true);
         if (response.status) {
             const userData = {
                 role: response.data.role,
@@ -35,14 +33,12 @@ const Login = () => {
         }
     }
 
-    // const AllFields = 
-
     return (
         <div className='bg-[#ccc] h-dvh flex justify-center place-items-center px-5 md:px-0'>
             <div className="bg-white rounded-lg p-5 flex flex-col gap-5 xl:w-1/4 md:w-1/2 w-full">
                 <h6 className='text-xl font-medium'>Login</h6>
                 <div className="grid grid-cols-1 gap-5">
-                    {getFormFields(userData, setUserData)?.map((list, i) => (
+                    {getFormFields()?.map((list, i) => (
                         <React.Fragment key={i}>
                             <LableInput {...list} />
                         </React.Fragment>

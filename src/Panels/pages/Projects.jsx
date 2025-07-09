@@ -15,21 +15,20 @@ const Projects = () => {
 
     const { project } = allApis();
     const { apiGet, apiPost, apiPostFile, apiDelete } = apiFunctions();
-    const { user, setErrors } = UserState();
+    const { user } = UserState();
     const { projectsColumns } = Columns();
     const navigate = useNavigate();
     const { showToast } = useToast();
-    const { getFormFields, validateForm } = AllInputs('project');
+    const { getFormFields, validateForm, data, setData, setErrors } = AllInputs('project');
 
-    const [data, setData] = useState([]);
+    const [all, setAll] = useState([]);
     const [open, setOpen] = useState(false);
     const [id, setId] = useState(null)
-    const [newData, setNewData] = useState({});
 
     const getData = async ({ status, msg }) => {
         const res = await apiGet(project.list);
         if (res.status) {
-            setData(res.data)
+            setAll(res.data)
             if (status) {
                 showToast(msg, 'success');
             }
@@ -57,23 +56,20 @@ const Projects = () => {
 
     const handleSubmit = async () => {
 
-        if (!validateForm(newData)) return;
-
-        const formData = new FormData();
-        Object.keys(newData).forEach(key => {
-            formData.append(key, newData[key])
-        })
-        formData.append("status", "0")
+        if (!validateForm()) return;
         let url;
         if (id) {
             url = project.update(id)
         } else {
-            project.add
+            url = project.add
         }
-        const res = await apiPostFile(url, formData);
-
+        const payload = {
+            ...data,
+            status: "0"
+        }
+        const res = await apiPost(url, payload);
         if (res.status) {
-            getData({ status: true, msg: 'Project Add SuccessFully' });
+            getData({ status: true, msg: `Project ${id ? 'Update' : 'Add'} SuccessFully` });
             setOpen(false)
         }
     }
@@ -87,8 +83,8 @@ const Projects = () => {
 
     const handleEdit = (row) => {
         setId(row.id)
-        setNewData({
-            ...row, file: row.imageUrl
+        setData({
+            ...row, file: row.image
         })
         setOpen(true)
     }
@@ -97,10 +93,10 @@ const Projects = () => {
         <>
             <HeadingAddBtn title='Projects' addClick={() => setOpen(true)} addTitle='Add New' />
             <div className="mt-5 md:p-5 p-2 bg-white rounded-lg shadowAll">
-                <TableUi columns={projectsColumns()} rows={data} statusClick={(row) => handleStatus(row.id, row.status == 1 ? 0 : 1)} editClick={(row) => handleEdit(row)} deleteClick={(row) => handleDelete(row.id)} viewClick={(row) => window.open(row.link, '_blank')} />
-                <CommanModel title={`${id ? 'Update' : 'Add'} Project`} open={open} onClose={() => { setOpen(false), setErrors({}), setNewData({}) }} submit={handleSubmit}>
+                <TableUi columns={projectsColumns()} rows={all} statusClick={(row) => handleStatus(row.id, row.status == 1 ? 0 : 1)} editClick={(row) => handleEdit(row)} deleteClick={(row) => handleDelete(row.id)} viewClick={(row) => window.open(row.link, '_blank')} />
+                <CommanModel title={`${id ? 'Update' : 'Add'} Project`} open={open} onClose={() => { setOpen(false), setErrors({}), setData({}) }} submit={handleSubmit}>
                     <div className="grid grid-cols-2 gap-5 py-2">
-                        {getFormFields(newData, setNewData, ctgOptions).map((list, i) => (
+                        {getFormFields(ctgOptions).map((list, i) => (
                             <div key={i} className={`${(i == 4 || i == 5) ? 'col-span-2' : ''}`}>
                                 <LableInput {...list} />
                             </div>

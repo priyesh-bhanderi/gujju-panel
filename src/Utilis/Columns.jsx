@@ -8,7 +8,7 @@ const Columns = () => {
 
     const projectsColumns = () => {
         return [
-            { field: 'title', name: 'Image', renderCell: (row) => { return <img src={row.imageUrl} className='h-16 aspect-video'/> } },
+            { field: 'title', name: 'Image', renderCell: (row) => { return <img src={row.image} className='h-16 aspect-video'/> } },
             { field: 'title', name: 'Project Name' },
             { field: 'category', name: 'category' },
             { field: 'tools', name: 'Tools' },
